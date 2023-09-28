@@ -494,9 +494,11 @@ MMSPlugin = MMSPluginConfig()
 MMSPlugin.detectSDKs()
 MMSPlugin.configure()
 
+src_dir = 'src'
+
 BuildScripts = [
-  'AMBuilder',
-  'PackageScript',
+  os.path.join(src_dir, 'AMBuilder'),
+  os.path.join(src_dir, 'PackageScript'),
 ]
 
 builder.Build(BuildScripts, { 'MMSPlugin': MMSPlugin })
