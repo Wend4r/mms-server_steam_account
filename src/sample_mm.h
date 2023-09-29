@@ -20,7 +20,7 @@
 #include <iplayerinfo.h>
 #include <sh_vector.h>
 
-class SamplePlugin : public ISmmPlugin, public IMetamodListener
+class ServerSteamAccount : public ISmmPlugin, public IMetamodListener
 {
 public:
 	bool Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late);
@@ -55,7 +55,7 @@ public:
 	const char *GetLogTag();
 };
 
-extern SamplePlugin g_SamplePlugin;
+extern ServerSteamAccount g_ServerSteamAccount;
 
 PLUGIN_GLOBALVARS();
 

@@ -11,7 +11,7 @@
  */
 
 #include <stdio.h>
-#include "sample_mm.h"
+#include "steam_steam_account.h"
 #include "iserver.h"
 
 SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
@@ -219,5 +219,5 @@ const char *ServerSteamAccount::GetName()
 
 const char *ServerSteamAccount::GetURL()
 {
-	return "Discord: Wend4r#0001";
+	return "Discord: wend4r, wend4r2";
 }
