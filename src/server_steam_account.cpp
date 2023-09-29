@@ -11,7 +11,7 @@
  */
 
 #include <stdio.h>
-#include "steam_steam_account.h"
+#include "server_steam_account.h"
 #include "iserver.h"
 
 SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
