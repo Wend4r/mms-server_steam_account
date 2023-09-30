@@ -26,6 +26,8 @@ bool PatternFinder::SetupLibrary(const void* lib, bool handle)
 		return false;
 	}
 
+	uintptr_t baseAddr;
+
 #ifdef _WINDOWS
 
 #	ifdef PLATFORM_X86
@@ -44,7 +46,7 @@ bool PatternFinder::SetupLibrary(const void* lib, bool handle)
 	IMAGE_FILE_HEADER *file;
 	IMAGE_OPTIONAL_HEADER *opt;
 
-	if (!VirtualQuery(libPtr, &info, sizeof(MEMORY_BASIC_INFORMATION)))
+	if (!VirtualQuery(lib, &info, sizeof(MEMORY_BASIC_INFORMATION)))
 	{
 		return nullptr;
 	}
@@ -76,11 +78,9 @@ bool PatternFinder::SetupLibrary(const void* lib, bool handle)
 	}
 
 	/* Finally, we can do this */
-	lib.memorySize = opt->SizeOfImage;
+	this->m_size = opt->SizeOfImage;
 
 #elif defined _LINUX
-	uintptr_t baseAddr;
-	
 	if(handle)
 	{
 		baseAddr = reinterpret_cast<uintptr_t>(static_cast<const link_map*>(lib)->l_addr);
