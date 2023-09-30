@@ -100,8 +100,7 @@ bool ServerSteamAccount::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 	#endif
 	}
 
-
-	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIActivated, server, this, &ServerSteamAccount::OnGameServerSteamAPIActivated, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIActivated, server, this, &ServerSteamAccount::OnGameServerSteamAPIActivated, true);
 	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIDeactivated, server, this, &ServerSteamAccount::OnGameServerSteamAPIDeactivated, true);
 
 	ISteamGameServer *pGameServer = SteamGameServer();
@@ -126,7 +125,7 @@ bool ServerSteamAccount::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 
 bool ServerSteamAccount::Unload(char *error, size_t maxlen)
 {
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIActivated, server, this, &ServerSteamAccount::OnGameServerSteamAPIActivated, false);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIActivated, server, this, &ServerSteamAccount::OnGameServerSteamAPIActivated, true);
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIActivated, server, this, &ServerSteamAccount::OnGameServerSteamAPIDeactivated, true);
 
 	return true;
@@ -229,7 +228,30 @@ bool ServerSteamAccount::AuthorizeGameServer(ISteamGameServer *pGameServer)
 
 	if(bResult)
 	{
+		META_CONPRINTF("Logging into Steam gameserver account with logon token '%.8sxxxxxxxxxxxxxxxxxxxxxxxx'\n", (const char *)m_sAccount);
 		pGameServer->LogOn((const char *)this->m_sAccount);
+	}
+	else
+	{
+		if(engine->IsDedicatedServer())
+		{
+			Warning( "****************************************************\n" );
+			Warning( "*                                                  *\n" );
+			Warning( "*  No Steam account token was specified.           *\n" );
+			Warning( "*  Logging into anonymous game server account.     *\n" );
+			Warning( "*  Connections will be restricted to LAN only.     *\n" );
+			Warning( "*                                                  *\n" );
+			Warning( "*  To create a game server account go to           *\n" );
+			Warning( "*  http://steamcommunity.com/dev/managegameservers *\n" );
+			Warning( "*                                                  *\n" );
+			Warning( "****************************************************\n" );
+		}
+		else
+		{
+			Msg( "Logging into anonymous listen server account.\n" );
+		}
+
+		SteamGameServer()->LogOnAnonymous();
 	}
 
 	return bResult;
