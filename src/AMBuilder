@@ -28,6 +28,7 @@ for sdk_name in MMSPlugin.sdks:
 
     if cxx.target.arch == 'x86':
       binary.sources += ['sourcehook/sourcehook_hookmangen.cpp']
+
     nodes = builder.Add(binary)
     MMSPlugin.binaries += [nodes]
     

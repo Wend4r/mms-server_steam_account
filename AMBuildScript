@@ -95,8 +95,11 @@ class MMSPluginConfig(object):
     self.sdks = {}
     self.binaries = []
     self.mms_root = None
+    self.steamworks_root = None
     self.all_targets = []
     self.target_archs = set()
+
+    self.libsteam = {}
 
     if builder.options.plugin_name is not None:
       self.plugin_name = builder.options.plugin_name
@@ -177,14 +180,42 @@ class MMSPluginConfig(object):
       raise Exception('Could not find a source copy of Metamod:Source')
     self.mms_root = Normalize(self.mms_root)
 
+    if builder.options.steamworks_path:
+      self.steamworks_root = builder.options.steamworks_path
+    else:
+      self.steamworks_root = ResolveEnvPath('STEAMWORKS', 'steamworks-sdk')
+      if not self.steamworks_root:
+        self.steamworks_root = ResolveEnvPath('STEAMWORKS', 'steamworks')
+      if not self.steamworks_root:
+        self.steamworks_root = ResolveEnvPath('STEAMWORKS', 'opensteamworks')
+
+    if not self.steamworks_root or not os.path.isdir(self.steamworks_root):
+      raise Exception('Could not find a source copy of SteamWorks')
+
+    self.steamworks_root = Normalize(self.steamworks_root)
+
     if use_present:
       for sdk in not_found:
         print('Warning: hl2sdk-{} was not found, and will not be included in build.'.format(sdk))
 
   def configure(self):
     for cxx in self.all_targets:
-      if cxx.target.arch not in ['x86', 'x86_64']:
+      arch = cxx.target.arch
+
+      if arch not in ['x86', 'x86_64']:
         raise Exception('Unknown target architecture: {0}'.format(arch))
+
+      if cxx.target.platform == 'windows':
+        self.libsteam[arch] = os.path.join(self.steamworks_root, 'redistributable_bin', 'win64', 'steam_api64.lib')
+      elif cxx.target.platform == 'linux':
+        linux_folders = {
+          'x86': 'linux32',
+          'x86_64': 'linux64'
+        }
+
+        self.libsteam[arch] = os.path.join(self.steamworks_root, 'redistributable_bin', linux_folders[arch], 'libsteam_api.so')
+      elif cxx.target.platform == 'mac':
+        self.libsteam[arch] = os.path.join(self.steamworks_root, 'redistributable_bin', 'osx', 'libsteam_api.dylib')
 
       self.configure_cxx(cxx)
 
@@ -445,6 +476,10 @@ class MMSPluginConfig(object):
       
       if sdk.name == 'bms':
         compiler.postlink += [os.path.join(lib_folder, 'mathlib.a')]
+
+    compiler.postlink += [
+      MMSPlugin.libsteam[compiler.target.arch]
+    ]
 
     binary = self.Library(compiler, name)
     compiler = binary.compiler
