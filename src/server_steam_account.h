@@ -25,9 +25,9 @@ class ServerSteamAccount : public ISmmPlugin, public IMetamodListener
 public:
 	bool Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late);
 	bool Unload(char *error, size_t maxlen);
+	void AllPluginsLoaded();
 	bool Pause(char *error, size_t maxlen);
 	bool Unpause(char *error, size_t maxlen);
-	void AllPluginsLoaded();
 
 public:
 	const char *GetAuthor();
@@ -40,7 +40,7 @@ public:
 	const char *GetLogTag();
 };
 
-extern ServerSteamAccount g_ServerSteamAccount;
+extern ServerSteamAccount g_aServerSteamAccount;
 
 PLUGIN_GLOBALVARS();
 
