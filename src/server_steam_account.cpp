@@ -14,11 +14,12 @@
 #include "server_steam_account.h"
 #include "iserver.h"
 
+#include "steam/isteamgameserver.h"
+
+SH_DECL_HOOK0_void(ISteamGameServer, LogOnAnonymous, SH_NOATTRIB, 0);
+
 ServerSteamAccount g_aServerSteamAccount;
-IServerGameDLL *server = NULL;
-IServerGameClients *gameclients = NULL;
 IVEngineServer *engine = NULL;
-IGameEventManager2 *gameevents = NULL;
 ICvar *icvar = NULL;
 
 // Should only be called within the active game loop (i e map should be loaded and active)
@@ -38,12 +39,30 @@ bool ServerSteamAccount::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 {
 	PLUGIN_SAVEVARS();
 
+	GET_V_IFACE_CURRENT(GetEngineFactory, engine, IVEngineServer, INTERFACEVERSION_VENGINESERVER);
+	GET_V_IFACE_CURRENT(GetEngineFactory, icvar, ICvar, CVAR_INTERFACE_VERSION);
+
 	META_CONPRINTF("Starting \"%s\" plugin.\n", g_aServerSteamAccount.GetName());
 
-	g_pCVar = icvar;
-	ConVar_Register( FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL );
+	ISteamGameServer *pGameServer = SteamGameServer();
 
-	return true;
+	bool bResult = pGameServer != NULL;
+
+	if(bResult)
+	{
+		SH_ADD_HOOK_MEMFUNC(ISteamGameServer, LogOnAnonymous, pGameServer, this, &ServerSteamAccount::Hook_LogOnAnonymous, false);
+
+		META_CONPRINTF( "All hooks started!\n" );
+
+		g_pCVar = icvar;
+		ConVar_Register( FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL );
+	}
+	else
+	{
+		ismm->Format(error, maxlen, "Failed to get \"%s\" interface", STEAMGAMESERVER_INTERFACE_VERSION);
+	}
+
+	return bResult;
 }
 
 bool ServerSteamAccount::Unload(char *error, size_t maxlen)
@@ -66,6 +85,13 @@ bool ServerSteamAccount::Pause(char *error, size_t maxlen)
 bool ServerSteamAccount::Unpause(char *error, size_t maxlen)
 {
 	return true;
+}
+
+void ServerSteamAccount::Hook_LogOnAnonymous()
+{
+	META_CONPRINTF("%s", "ServerSteamAccount::Hook_LogOnAnonymous()\n");
+
+	RETURN_META(MRES_HANDLED);
 }
 
 const char *ServerSteamAccount::GetLicense()

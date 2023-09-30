@@ -29,6 +29,9 @@ public:
 	bool Pause(char *error, size_t maxlen);
 	bool Unpause(char *error, size_t maxlen);
 
+public: // Hooks.
+	void Hook_LogOnAnonymous();
+
 public:
 	const char *GetAuthor();
 	const char *GetName();
