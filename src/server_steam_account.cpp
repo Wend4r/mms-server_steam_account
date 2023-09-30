@@ -262,7 +262,7 @@ const char *ServerSteamAccount::GetLicense()
 
 const char *ServerSteamAccount::GetVersion()
 {
-	return "1.0.0.0";
+	return "1.0.0";
 }
 
 const char *ServerSteamAccount::GetDate()
