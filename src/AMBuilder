@@ -16,6 +16,7 @@ for sdk_name in MMSPlugin.sdks:
     binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
 
     binary.sources += [
+      'pattern/finder.cpp',
       'server_steam_account.cpp',
     ]
 

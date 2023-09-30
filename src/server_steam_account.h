@@ -16,9 +16,12 @@
 #define _INCLUDE_METAMOD_SOURCE_STUB_PLUGIN_H_
 
 #include <ISmmPlugin.h>
-#include <igameevents.h>
-#include <iplayerinfo.h>
 #include <sh_vector.h>
+
+#include <steam/steam_api_common.h>
+#include <steam/isteamuser.h>
+
+#define MAX_ACCOUNT_TOKEN_LENGTH 32
 
 class ServerSteamAccount : public ISmmPlugin, public IMetamodListener
 {
@@ -29,8 +32,16 @@ public:
 	bool Pause(char *error, size_t maxlen);
 	bool Unpause(char *error, size_t maxlen);
 
-public: // Hooks.
-	void Hook_LogOnAnonymous();
+public: // SourceHooks.
+	void OnGameServerSteamAPIActivated();
+	void OnGameServerSteamAPIDeactivated();
+
+private: // Commands.
+	CON_COMMAND_MEMBER_F(ServerSteamAccount, "sv_setsteamaccount", OnSetSteamAccountCommand, "Set game server account token to use for logging in to a persistent game server account", FCVAR_LINKED_CONCOMMAND);
+
+private: // Game server methods.
+	bool ProcessCommandLineAccount();
+	bool AuthorizeGameServer(ISteamGameServer *pGameServer);
 
 public:
 	const char *GetAuthor();
@@ -41,6 +52,13 @@ public:
 	const char *GetVersion();
 	const char *GetDate();
 	const char *GetLogTag();
+
+private:
+	char m_sAccount[MAX_ACCOUNT_TOKEN_LENGTH + 1] = "\0";
+
+	bool m_bWantAuthorize = false;
+
+	ISteamGameServer *m_pSteamGameServer;
 };
 
 extern ServerSteamAccount g_aServerSteamAccount;
