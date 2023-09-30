@@ -118,7 +118,7 @@ bool ServerSteamAccount::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 	}
 
 	g_pCVar = icvar;
-	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
+	ConVar_Register(FCVAR_RELEASE | FCVAR_GAMEDLL);
 
 	return true;
 }
