@@ -22,8 +22,6 @@
 
 SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIActivated, SH_NOATTRIB, 0);
 SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIDeactivated, SH_NOATTRIB, 0);
-SH_DECL_HOOK1_void(ISteamGameServer, LogOn, SH_NOATTRIB, 0, const char *);
-SH_DECL_HOOK0_void(ISteamGameServer, LogOnAnonymous, SH_NOATTRIB, 0);
 
 ServerSteamAccount g_aServerSteamAccount;
 IVEngineServer *engine = NULL;
