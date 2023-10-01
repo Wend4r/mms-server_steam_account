@@ -12,7 +12,7 @@
 ### Setting up
  * ``mkdir build`` & ``cd build`` in the root of the plugin folder.
  * Open the [MSVC developer console](https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line) with the correct platform (x86 or x86_64) that you plan on targetting.
- * Run ``python3 ../configure.py --plugin-name={PLUGIN_NAME} --plugin-alias={PLUGIN_ALIAS} -s {SDKNAME} --targets={TARGET} --mms_path={MMS_PATH} --steamworks_path={STEAMWORKS_PATH} --hl2sdk-root {HL2SDKROOT} `` where:
+ * Run ``python3 ../configure.py --plugin-name={PLUGIN_NAME} --plugin-alias={PLUGIN_ALIAS} -s {SDKNAME} --targets={TARGET} --mms_path={MMS_PATH} --steamworks_path={STEAMWORKS_PATH} --hl2sdk-root={HL2SDKROOT} `` where:
    * ``{PLUGIN_NAME}`` should be the plugin name which is used for the resulting binary name and folder naming scheme (this doesn't affect the plugin name you'd see in the plugin list if you don't modify the base plugin functions);
    * ``{PLUGIN_ALIAS}`` should be used to set the plugin alias that is used as a short hand version to load, unload, list info etc via the metamod-source menu (example being ``meta unload server_steam_account``, where ``server_steam_account`` is the alias);
    * ``{SDKNAME}`` should be the hl2sdk game name that you are building for;
