@@ -1,6 +1,6 @@
 ## Server Steam Account
 
- MetaMod:Source plugin for Source 2 that authorizes a game server account by `+sv_setsteamaccount` command line parameter (it can also be used in autoexec configs).
+ MetaMod:Source plugin for Source 2 that authorizes a game server account by `+sv_setsteamaccount` command line parameter or autoexec command.
 
 ### Prerequisites
  * [hl2sdk](https://github.com/alliedmodders/hl2sdk) of the game you plan on writing plugin for (the current plugin build scripts allows only for 1 sdk and 1 platform at a time!);
