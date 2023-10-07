@@ -52,13 +52,13 @@ bool ServerSteamAccount::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 		static const char szSteamGameServerInitName[] = "SteamGameServer_Init";
 
 	#if defined(_WINDOWS) && defined(X64BITS)
-		static const char sSteamGameServerInitSignature[] = "\x40\x53\x55\x56\x48\x81\xEC\xE0\x06\x00\x00";
+		static const char sSteamGameServerInitSignature[] = "\x48\x89\x5C\x24\x18\x48\x89\x6C\x24\x20\x56\x48\x81\xEC\x60\x06\x00\x00";
 
 		void *pSteamGameServerInitFunction = g_aEnginePattern.Find(sSteamGameServerInitSignature, sizeof(sSteamGameServerInitSignature) - 1);
 
 		if(pSteamGameServerInitFunction)
 		{
-			uint8_t *pLogOnCallAddress = (uint8_t *)pSteamGameServerInitFunction + 0x3F9;
+			uint8_t *pLogOnCallAddress = (uint8_t *)pSteamGameServerInitFunction + 0x342;
 
 			SourceHook::SetMemAccess(pLogOnCallAddress, 3, SH_MEM_READ | SH_MEM_WRITE | SH_MEM_EXEC);
 
@@ -73,7 +73,7 @@ bool ServerSteamAccount::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 			return false;
 		}
 	#elif defined(_LINUX) && defined(X64BITS)
-		static const uint8_t sSteamGameServerInitSignature[] = "\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x81\xEC\x38\x24\x00\x00";
+		static const uint8_t sSteamGameServerInitSignature[] = "\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x81\xEC\x18\x24\x00\x00";
 
 		void *pSteamGameServerInitFunction = g_aEnginePattern.Find(sSteamGameServerInitSignature, sizeof(sSteamGameServerInitSignature) - 1);
 
